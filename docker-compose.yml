@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: "rabbitmq:3.11.8-management-alpine"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    hostname: rabbitmq
+    networks:
+      - app_network
+    restart: always
+
+  producer:
+    container_name: producer_app
+    build:
+      context: .
+      dockerfile: ./producer/Dockerfile
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    env_file:
+      .env
+
+    networks:
+      - app_network
+    depends_on:
+      - rabbitmq
+    restart: always
+    volumes:
+      - .:/code/app
+
+  consumer:
+    container_name: consumer_app
+    build:
+      context: .
+      dockerfile: ./consumer/Dockerfile
+    environment:
+      - CONSUMER=WriteMessageWorkQueuesCase
+    networks:
+      - app_network
+    restart: always
+  consumer_csv:
+    container_name: consumer_csv
+    build:
+      context: .
+      dockerfile: ./consumer/Dockerfile
+    environment:
+      - CONSUMER=WriteToCSVWorkQueuesCase
+    networks:
+      - app_network
+    restart: always
+    volumes:
+      - ${DUMP_DIR}:/code/app/data
+
+networks:
+  app_network:
+    driver: bridge
