@@ -40,6 +40,16 @@ services:
     networks:
       - app_network
     restart: always
+  consumer_fanout:
+    container_name: consumer_fanout
+    build:
+      context: .
+      dockerfile: ./consumer/Dockerfile
+    environment:
+      - CONSUMER=WriteFanoutMessageWorkQueuesCase
+    networks:
+      - app_network
+    restart: always
   consumer_csv:
     container_name: consumer_csv
     build:
