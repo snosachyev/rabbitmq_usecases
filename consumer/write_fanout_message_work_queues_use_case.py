@@ -3,7 +3,7 @@ import logging
 import threading
 
 from consumer.work_queues_use_case import WorkQueuesCase
-from core.rbq import FANOUT_QUEUE_MESSAGE
+from core.config import FANOUT_QUEUE_MESSAGE
 
 
 class WriteFanoutMessageWorkQueuesCase(WorkQueuesCase):
